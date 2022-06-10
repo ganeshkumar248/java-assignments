@@ -15,7 +15,7 @@ public class ComplaintsLoader {
 
 		try {
 			ClassLoader classLoader = this.getClass().getClassLoader();
-			File file = new File(classLoader.getResource("complaints.csv").getFile());
+			File file = new File(classLoader.getResource("assignments.csv").getFile());
 			FileReader filereader = new FileReader(file);
 			CSVReader csvReader = new CSVReaderBuilder(filereader).withSkipLines(1).build();
 			List<String[]> allData = csvReader.readAll();
