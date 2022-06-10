@@ -17,11 +17,6 @@ import trade.TokyoDao;
 
 class RegionalDaoManagerTest {
 	
-	  @Mock
-	   RegionalDao regionalDao;
-	  
-	  RegionalDaoManager regionalDaoManager = new RegionalDaoManager();
-
 	@Test  
 	void Positive_Test_London() {
 		RegionalDaoManager rdm = new RegionalDaoManager();
@@ -54,8 +49,10 @@ class RegionalDaoManagerTest {
 	
 	@Test
     public void Exception_Test() {
+		
+		RegionalDaoManager rdm = new RegionalDaoManager();
 
-        Executable e  = () -> regionalDaoManager.getRegionalDao(Region.valueOf("someother value"));
+        Executable e  = () -> rdm.getRegionalDao(Region.valueOf("someother value"));
 
         assertThrows(IllegalArgumentException.class,e);
 
