@@ -28,8 +28,8 @@ class TaskServiceTest {
 	    private TradeService tradeService = new TradeService();
 
 	    @InjectMocks
-	    private TradeService mockTradeService;
-
+	    private TradeService mts;
+ 
 	    @Mock
 	    private RegionalDao regionalDao;
 
@@ -81,9 +81,9 @@ class TaskServiceTest {
         Mockito.when(regionalDao.getDataSource().getConnection()).thenReturn(Mockito.any());
         
         Mockito.when(regionalDao.getTradeDetails(121456789)).thenReturn(new TradeDetails(121456789,Region.LONDON,1));
-        Mockito.when(mockTradeService.getTradeDetails(121456789)).thenReturn(new TradeDetails());
+        Mockito.when(mts.getTradeDetails(121456789)).thenReturn(new TradeDetails());
 	    
-        TradeDetails actual = mockTradeService.getTradeDetails(12145678);
+        TradeDetails actual = mts.getTradeDetails(12145678);
         TradeDetails expected = new TradeDetails();
         expected.setTradeId(12145678);
         expected.setStatus(0);
@@ -100,9 +100,9 @@ class TaskServiceTest {
         Mockito.when(regionalDao.getDataSource().getConnection()).thenReturn(Mockito.any());
         
         Mockito.when(regionalDao.getTradeDetails(123456789)).thenReturn(new TradeDetails(123456789,Region.TOKYO,1));
-        Mockito.when(mockTradeService.getTradeDetails(123456789)).thenReturn(new TradeDetails());
+        Mockito.when(mts.getTradeDetails(123456789)).thenReturn(new TradeDetails());
 	    
-        TradeDetails actual = mockTradeService.getTradeDetails(12145678);
+        TradeDetails actual = mts.getTradeDetails(12145678);
         TradeDetails expected = new TradeDetails();
         expected.setTradeId(12345678);
         expected.setStatus(0);
@@ -120,9 +120,9 @@ class TaskServiceTest {
         Mockito.when(regionalDao.getDataSource().getConnection()).thenReturn(Mockito.any());
         
         Mockito.when(regionalDao.getTradeDetails(122456789)).thenReturn(new TradeDetails(122456789,Region.NEWYORK,1));
-        Mockito.when(mockTradeService.getTradeDetails(122456789)).thenReturn(new TradeDetails());
+        Mockito.when(mts.getTradeDetails(122456789)).thenReturn(new TradeDetails());
 	    
-        TradeDetails actual = mockTradeService.getTradeDetails(12245678);
+        TradeDetails actual = mts.getTradeDetails(12245678);
         TradeDetails expected = new TradeDetails();
         expected.setTradeId(12245678);
         expected.setStatus(0);
