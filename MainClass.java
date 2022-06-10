@@ -1,62 +1,61 @@
+
+import java.io.*;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.Scanner;
-import java.util.stream.Collectors;
 
-public class MainClass {
+import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
 
-	static List<Complaint> complaintsList = new ArrayList<>();
+public class ComplaintsLoader {
 
-	public static void main(String[] args) {
+	public List<Complaint> ComplaintsList() {
+		List<Complaint> complaints = new ArrayList<>();
 
-		complaintsList = ComplaintsLoader.complaintsList();
+		try {
+			ClassLoader classLoader = this.getClass().getClassLoader();
+			File file = new File(classLoader.getResource("complaints.csv").getFile());
+			FileReader filereader = new FileReader(file);
+			CSVReader csvReader = new CSVReaderBuilder(filereader).withSkipLines(1).build();
+			List<String[]> allData = csvReader.readAll();
+			
+			for (String[] row : allData) {
+				Complaint newComplaint = new Complaint(parseDate(row[0]), row[1], row[2], row[3], row[4],
+				row[5], row[6], row[7], row[8], parseDate(row[9]), row[10],
+				row[11].equalsIgnoreCase("Yes")? true: false, 
+				row[12].equalsIgnoreCase("yes")? true: false, Integer.parseInt(row[13]));
+		complaint.add(newComplaint);
 
-		Scanner sc = new Scanner(System.in);
-
-		System.out.println("Fetch Complaint Based on ID \n please enter ID");
-		int id = sc.nextInt();
-		Complaint complaint = fetchComplaintBasedOnID(id);
-		
-		System.out.println("Fetch Complaints Based on year \n please enter year");
-		int year = sc.nextInt();
-		Optional<List<Complaint>> complaintsBasedOnYear = fetchAllComplaintsBasedOnYear(year);
-		
-		
-		System.out.println("Fetch Complaints Based on bank name \n please enter bank name");
-		String bankName = sc.next();
-		Optional<List<Complaint>> complaintsBasedOnbankName = fetchComplaintsBasedOnBankName(bankName);
-		
-		System.out.println("Fetch days between complaint received and closed dates \n please enter id");
-		int id1 = sc.nextInt();
-		long days = ticketClosingTime(id1);
-
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return complaints;
 	}
+	
+	public static LocalDate parseDate(String date) {
+	        final LocalDate[] parsedDate = new LocalDate[1];
+	        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+	        DateTimeFormatter dateTimeFormatter2 = DateTimeFormatter.ofPattern("MM-dd-yy");
+	        DateTimeFormatter dateTimeFormatter3 = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+	        DateTimeFormatter dateTimeFormatter4 = DateTimeFormatter.ofPattern("MM/dd/yy");
 
-	public static Complaint fetchComplaintBasedOnID(int id) {
-		return complaintsList.stream().filter(c -> c.getComplaintID() == id).findAny().orElse(null);
-	}
+	        List<DateTimeFormatter> dateTimeFormatters = new ArrayList<>();
 
-	public static Optional<List<Complaint>> fetchAllComplaintsBasedOnYear(int year) {
+	        dateTimeFormatters.add(dateTimeFormatter);
+	        dateTimeFormatters.add(dateTimeFormatter2);
+	        dateTimeFormatters.add(dateTimeFormatter3);
+	        dateTimeFormatters.add(dateTimeFormatter4);
 
-		return Optional.ofNullable(complaintsList.stream().filter(c -> c.getDateReceived().getYear() == year).collect(Collectors.toList()));
-	}
+	        dateTimeFormatters.forEach(dateTimeFormatterEach -> {
 
-	public static Optional<List<Complaint>> fetchComplaintsBasedOnBankName(String bankName) {
+	            try {
+	                parsedDate[0] = LocalDate.parse(date, dateTimeFormatterEach);
+	            }
+	            catch (Exception e) {}
+	        } );
 
-		return Optional.ofNullable(complaintsList.stream().filter(c -> c.getCompany().equals(bankName)).collect(Collectors.toList()));
-	}
-
-	public static long ticketClosingTime(int id) {
-
-		Complaint complaint = complaintsList.stream().filter(c -> c.getComplaintID() == id).findAny().orElse(null);
-		LocalDate dateReceived = complaint.getDateReceived();
-		LocalDate dateClosed = complaint.getDateClosed();
-
-		return ChronoUnit.DAYS.between(dateReceived, dateClosed);
-
-	}
-
+	        return parsedDate[0];
+	    }
 }
